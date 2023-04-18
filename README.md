@@ -67,10 +67,9 @@ mol2 = "path/to/your/mol2file/example.mol2"
 1. if you want to use the cgenff website:
    
     upload the reformated mol2 file and download the output str file. 
-
+   
     the str file contains both rtf and prams for the molecule. 
-    
-    
+
     you only need to use `stream example.str` in your charmm input file to plug in your small molecule.
     
     
@@ -79,15 +78,13 @@ mol2 = "path/to/your/mol2file/example.mol2"
 2. if you want to use CHARMM-GUI:
    
     select "Input Generator" and then the "Ligand Reader".
-
+   
     select "Upload MOL/MOL2/SDF", choose file, select your reformated mol2 file. 
-
+   
    **make sure hydrogens and charges are correct!**
-
+   
     select "Make CGenff topology" and give a proper name to your "LIG".
-    
-    
-    
+
     download the final tgz file and unzip it. Gromacs files will be include in the folder, which why using CHARMM-GUI is highly recommended.
     
     
@@ -101,7 +98,7 @@ In this case, you can image building the molecule from scratch probably will not
 
 ## generate mol2 file
 
-1. add hydrogen atoms to your PDB, including protein and ligand. (tool: pymol command `h_add`)
+1. add hydrogen atoms to your PDB, including protein and ligand. (tool: pymol command `h_add`; you can also use [complete.pl - MMTSB](http://blue11.bch.msu.edu/mmtsb/complete.pl))
 2. extract the ligand coordinates for the hydrogen-added PDB. (`grep ligand_name *_addh.pdb`)
 3. openbabel online: input as "PDB", output as "mol2". Convert and download the mol2 file.
 4. again, use jupyter-notebook to reformat the mol2 file. (see above)
