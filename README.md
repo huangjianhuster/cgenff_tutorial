@@ -1,6 +1,14 @@
 # CGenff tutorial
 
-This is a cgenff tutorial aiming at showing beginers how to build rtf(topology) and parm(parameter) of small molecules. Some contents are directly borrowed from [Xiping's repository](https://github.com/XipingGong/cgenfftutorial). This tutorial also introduced how to use quantum chemistry softwares (such as GAMESS) to further optimize parameters of small molecules. 
+@Author: jim
+
+@E-mail: jianhuang@umass.edu
+
+@website: huang-jian.com
+
+This is a tutorial aiming at showing beginers how to build rtf(topology) and parm(parameter) of small molecules using CGenff. The theoretical framework of CGenff has been thoroughly described in [this paper]([CHARMM General Force Field (CGenFF): A force field for drug-like molecules compatible with the CHARMM all-atom additive biological force fields - PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2888302/)). This tutorial will be mainly leaning on the technical details.
+
+This tutorial will also introduce how to use quantum chemistry softwares (such as GAMESS) to further optimize parameters of small molecules, like charges. 
 
 This tutorial mainly divides into the following sections
 
@@ -99,10 +107,7 @@ toppar.str
 # lig/ dir contains
 lig.rtf
 lig.prm
-
 ```
-
-
 
 # Further optimization using DFT calculation
 
@@ -177,7 +182,46 @@ H      1.0      1.0313727821   -5.7167863298   -0.3098164499
  $END
 ```
 
-We are using the **(B3LYP/6-31G\*\*)** level to do geometry optimization and energy calculations
+We are using the **(B3LYP/6-31G\*\*)** level to do geometry optimization and energy calculations. It is also recommended to use mp2, which is a higher level algorithm, to optimize charges. If you want to use mp2, you need to use the following header:
+
+```shell
+! This is for MP2
+! This PC-GAMESS input file is OK for RAM > 100MB
+!
+ $CONTRL SCFTYP=RHF MPLEVL=2 RUNTYP=OPTIMIZE COORD=CART
+  NZVAR=0 MULT=1 ICHARG=-1
+  AIMPAC=.TRUE.         ! Requests wfn file to be written.
+ $END
+ $NBO  $END
+ $SYSTEM TIMLIM=9000000 MEMORY=1600000000 $END
+ $STATPT NSTEP=1000 $END
+ $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 NPFUNC=1 $END
+ $GUESS GUESS=HUCKEL $END
+ $statpt opttol=1d-3 $end
+
+#################
+! This is for RI-MP2
+! https://gamess.gitbooks.io/gamess-input-description/content
+ $CONTRL EXETYP=RUN $END
+ $SYSTEM PARALL=.T. $END
+ $SYSTEM MWORDS=15 $END
+ $SYSTEM MEMDDI=51 $END
+ $CONTRL SCFTYP=RHF MULT=1 ICHARG=-1 ISPHER=1 $END
+ $CONTRL RUNTYP=ENERGY $END
+ $CONTRL MPLEVL=2 $END
+ $CONTRL MAXIT=100 $END
+ $CONTRL QMTTOL=1.0E-6 $END
+ $SCF DIRSCF=.T. DIIS=.T. SOSCF=.F. FDIFF=.F. $END
+ $BASIS GBASIS=CCT $END
+ $STATPT NSTEP=1000 OPTTOL=0.0001 $END
+ $MP2 CODE=OMPRIMP2 $END
+!$MP2 NACORE=0 $END
+ $AUXBAS CABNAM=ACCT $END
+```
+
+For knowledge about those different levels of optimization algorithms, you will need to refer to the [GAMESS official website]([Gordon Group/GAMESS Homepage](https://www.msg.chem.iastate.edu/gamess/documentation.html)) or quantum chemistry tutorials. You may want to change the basis set and also the auxiliary basis set depending on your needs.
+
+For different small molecules, we need to modify `MULT` (multiplicity M = 2*S + 1, is it singlet state or triplet state?), `ICHARG`(the wholeall charge of the molecule) as well as symmetry `C1`.
 
 ## Run GAMESS
 
@@ -196,7 +240,7 @@ We are using the **(B3LYP/6-31G\*\*)** level to do geometry optimization and ene
     You will have a rungmx script to run the optimization.
    
    ```shell
-       ./rungms example.inp | tee example.out
+       ./rungms example.inp | tee example.log
    ```
 
 3. Final results will be shown in the defined SCR directory. (\*.dat & \*.wfn)
@@ -204,14 +248,20 @@ We are using the **(B3LYP/6-31G\*\*)** level to do geometry optimization and ene
 4. Use the RESP method to calculate charge of each atom
    
    ```shell
+   # rename example.log to example.gms
+   
    # tool: Multiwfn (http://sobereva.com/multiwfn/download.html)
    
-   4.1 select *.wfn as input
+   4.1 select example.gms as input
    4.2 select 7 "Population analysis"
    4.3 select 13 (MK-ESP) or 18 (RESP)
    4.4 select 1 "start calculation"
    ```
 
-You will get the final charges from the screen output. 
+You will get the final charges from the screen output.  save it into `example.charges` and compare it to the cgenff charge data `build_from_scratch/charmm-gui-8184832299/lig/lig.rtf`. Manually replace CGenff parameters to the QM-optimized charges. Done!
 
 
+
+# Acknowledgements
+
+Thanks to [Xiping]() and Zhiguang
