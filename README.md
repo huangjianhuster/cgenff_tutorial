@@ -24,7 +24,7 @@ This tutorial mainly divides into the following sections
    
    *CHARMM-GUI Ligand reader will give all necessary topologies in CHARMM and gromacs files*
 
-3. GAMESS US: https://www.basissetexchange.org/
+3. GAMESS US: [Gordon Group/GAMESS Homepage](https://www.msg.chem.iastate.edu/gamess/)
 
 # Building small molecule from scratch
 
@@ -53,9 +53,7 @@ Then it was converted a mol2 through openbabel.
 
 *(a tricky step, may or may not be required)*
 
-
 A problem I had was that cgenff always refused my mol2 file with warnings and error while reading it. This may come from some hiding coding formatting issues of the mol2 file we downloaded from openbabel. And this may or may not happen to your case.
-
 
 I found using jupyter-notebook is pretty handy to reformat the file. Just print out the mol2 file in a cell of a created jupyter notebook and copy and paste the content to a newly created file. Jupyter-notebook only prints out plain text and maybe that's why it can fix the hiding coding issue.
 
@@ -68,46 +66,36 @@ mol2 = "path/to/your/mol2file/example.mol2"
 
 1. if you want to use the cgenff website:
    
-   
     upload the reformated mol2 file and download the output str file. 
-   
-   
+
     the str file contains both rtf and prams for the molecule. 
-   
-   
+    
+    
     you only need to use `stream example.str` in your charmm input file to plug in your small molecule.
-   
-   
+    
+    
     If you want to convert CHARMM rtf and params to be used in other platforms (such as gromacs), you will need to find out the scripts to do the conversion. like: [cgenff_charmm2gmx.py](https://github.com/Bioinformatics-Review/MD-simulation-files/blob/master/cgenff_charmm2gmx.py)
-   
-   
 
 2. if you want to use CHARMM-GUI:
    
-   
     select "Input Generator" and then the "Ligand Reader".
-   
-   
+
     select "Upload MOL/MOL2/SDF", choose file, select your reformated mol2 file. 
-   
-   
-   
+
    **make sure hydrogens and charges are correct!**
-   
-   
+
     select "Make CGenff topology" and give a proper name to your "LIG".
-   
-   
-   
+    
+    
+    
     download the final tgz file and unzip it. Gromacs files will be include in the folder, which why using CHARMM-GUI is highly recommended.
-   
-   
+    
+    
     check "build_from_scratch/charmm-gui-8184832299", it has a psf and a crd for the ligand. And ```lig```folder has all charmm files: rtf, prm. `gromacs`folder has all files for running simulation in the gromacs platform.
 
 # Building small molecule based on an existing PDB
 
 Some times we do not need to build a drug molecule or ligand from scratch since we aleady have a protein-ligand complex that contains the coordinates of the small molecule. More importantly, we plan to use the coordinates to build a simulation box.
-
 
 In this case, you can image building the molecule from scratch probably will not give you the same order of atoms as in your PDB file. Though doable, it is very painful to match the PDB coordinates according to PSF file. I would prefer to use the ligand coordinates from the PDB file directly to generate mol2, and then rtf and params.
 
@@ -117,8 +105,6 @@ In this case, you can image building the molecule from scratch probably will not
 2. extract the ligand coordinates for the hydrogen-added PDB. (`grep ligand_name *_addh.pdb`)
 3. openbabel online: input as "PDB", output as "mol2". Convert and download the mol2 file.
 4. again, use jupyter-notebook to reformat the mol2 file. (see above)
-
-
 
 check ```build_from_pdb```folder for an example (3SOA.pdb, ligand: DB8)
 
@@ -132,8 +118,6 @@ grep DB8 3SOA_addh.pdb | grep HETATM > DB8.pdb
 ## Generate rtf and params
 
 Using the same procedure to generate rtf and params as described above.
-
-
 
 check `build_from_pdb/charmm-gui-8184954452`
 
@@ -258,8 +242,6 @@ We are using the **(B3LYP/6-31G\*\*)** level to do geometry optimization and ene
 ```
 
 For knowledge about those different levels of optimization algorithms, you will need to refer to the [GAMESS official website]([Gordon Group/GAMESS Homepage](https://www.msg.chem.iastate.edu/gamess/documentation.html)) or quantum chemistry tutorials. You may want to change the basis set and also the auxiliary basis set depending on your needs.
-
-
 
 For different small molecules, we need to modify `MULT` (multiplicity M = 2*S + 1, is it singlet state or triplet state?), `ICHARG`(the wholeall charge of the molecule) as well as symmetry `C1`.
 
