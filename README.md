@@ -260,8 +260,6 @@ For different small molecules, we need to modify `MULT` (multiplicity M = 2*S + 
 
 You will get the final charges from the screen output.  save it into `example.charges` and compare it to the cgenff charge data `build_from_scratch/charmm-gui-8184832299/lig/lig.rtf`. Manually replace CGenff parameters to the QM-optimized charges. Done!
 
-
-
 # Acknowledgements
 
-Thanks to [Xiping]() and Zhiguang
+Thanks to [Xiping](https://github.com/xipinggong) and Zhiguang for their help while writing this tutorial.
