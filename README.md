@@ -4,7 +4,7 @@
 
 @E-mail: jianhuang@umass.edu
 
-@website: huang-jian.com
+@website: [huang-jian.com](huang-jian.com)
 
 This is a tutorial aiming at showing beginers how to build rtf(topology) and parm(parameter) of small molecules using CGenff. The theoretical framework of CGenff has been thoroughly described in [this paper]([CHARMM General Force Field (CGenFF): A force field for drug-like molecules compatible with the CHARMM all-atom additive biological force fields - PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2888302/)). This tutorial will be mainly leaning on the technical details.
 
